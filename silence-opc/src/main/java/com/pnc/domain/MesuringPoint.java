@@ -17,6 +17,11 @@ import java.io.Serializable;
 public class MesuringPoint implements Serializable {
 
     /**
+     * 测点索引
+     */
+    private String index;
+
+    /**
      * 源code，DCS或者PLC系统上测点的编码
      */
     private String sourceCode;
@@ -34,15 +39,10 @@ public class MesuringPoint implements Serializable {
     /**
      * 测点数据类型
      */
-    private DataType dataType;
+    private OpcDataType dataType;
 
     /**
-     * 计算表达式
-     */
-    private String calculateExp;
-
-    /**
-     * 系统编号，表示opc服务的标示
+     * 系统编号
      */
     private int sysId;
 
@@ -70,12 +70,23 @@ public class MesuringPoint implements Serializable {
         this.pointName = pointName;
     }
 
-    public String getCalculateExp() {
-        return calculateExp;
+    public MesuringPoint() {
     }
 
-    public void setCalculateExp(String calculateExp) {
-        this.calculateExp = calculateExp;
+    public OpcDataType getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(OpcDataType dataType) {
+        this.dataType = dataType;
+    }
+
+    public String getIndex() {
+        return index;
+    }
+
+    public void setIndex(String index) {
+        this.index = index;
     }
 
     public int getSysId() {
@@ -86,14 +97,9 @@ public class MesuringPoint implements Serializable {
         this.sysId = sysId;
     }
 
-    public MesuringPoint() {
-    }
-
-    public DataType getDataType() {
-        return dataType;
-    }
-
-    public void setDataType(DataType dataType) {
-        this.dataType = dataType;
+    @Override
+    public String toString() {
+        return "index:" + this.getIndex() + ",sourceCode:" + this.getSourceCode()
+                + ",targetCode:" + this.getTargetCode() + ",pointName:" + this.getPointName();
     }
 }

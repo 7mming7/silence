@@ -1,7 +1,9 @@
 package com.pnc.domain;
 
+import com.pnc.core.exception.UnsupportedValueException;
+
 /**
- * Created with IntelliJ IDEA.
+ * OPC数据类型，主要区分开关量和模拟量.
  * User: shuiqing
  * Date: 2015/7/16
  * Time: 10:31
@@ -12,7 +14,7 @@ package com.pnc.domain;
  * |_)._ _
  * | o| (_
  */
-public enum DataType {
+public enum OpcDataType {
 
     /** 测点类型-开关量 */
     DATATYPE_DI(0),
@@ -30,7 +32,7 @@ public enum DataType {
      * 构造函数
      * @param index 用于构造枚举的下标。
      */
-    private DataType(int index) {
+    private OpcDataType(int index) {
         this.index = index;
     }
 
@@ -40,5 +42,15 @@ public enum DataType {
      */
     public int index() {
         return index;
+    }
+
+    public static OpcDataType indexOf(int index) {
+        for (OpcDataType item : OpcDataType.values()) {
+            if (item.index == index) {
+                return item;
+            }
+        }
+
+        throw new UnsupportedValueException("枚举类型 AttachType 不支持下标值 " + index);
     }
 }

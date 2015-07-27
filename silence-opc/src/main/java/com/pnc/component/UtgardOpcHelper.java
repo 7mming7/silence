@@ -40,8 +40,6 @@ public class UtgardOpcHelper {
 
     private static final Logger log = LoggerFactory.getLogger(UtgardOpcHelper.class);
 
-    private static String filePath = "d:/test.csv";
-
     /**
      * 连接目标host的opc server
      * @return 服务连接

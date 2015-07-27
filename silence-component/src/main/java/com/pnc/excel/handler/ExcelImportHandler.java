@@ -122,7 +122,7 @@ public class ExcelImportHandler {
             return results;
         } catch (Exception e) {
             String error = "解析导入文件出错! 文件名称: " + file.getName();
-            log.error(error);
+            log.error(error,e);
             return null;
         }
     }
@@ -274,6 +274,6 @@ public class ExcelImportHandler {
     /*public static void main(String args[]){
         ExcelImportHandler excelImportHandler = new ExcelImportHandler();
         File file = new File("d:/test.csv");
-        excelImportHandler.getDataFromCsv(file, 4);
+        ExcelImportHandler.getDataFromCsv(file, 4);
     }*/
 }

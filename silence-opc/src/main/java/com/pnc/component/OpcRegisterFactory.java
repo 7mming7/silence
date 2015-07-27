@@ -1,7 +1,9 @@
 package com.pnc.component;
 
 import com.pnc.domain.MesuringPoint;
+import com.pnc.domain.OpcDataType;
 import com.pnc.domain.OpcServerInfomation;
+import com.pnc.excel.handler.ExcelImportHandler;
 import org.jinterop.dcom.common.JIException;
 import org.openscada.opc.lib.common.ConnectionInformation;
 import org.openscada.opc.lib.da.Server;
@@ -10,6 +12,8 @@ import org.openscada.opc.lib.da.browser.Leaf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.InputStream;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -42,17 +46,7 @@ public class OpcRegisterFactory {
      * @param serverInfomation 服务信息
      */
     public static void registerServerInfo (int c_id, OpcServerInfomation serverInfomation) {
-        conInfoMap.put(c_id,serverInfomation);
-    }
-
-    /**
-     * 填充注册中心关于server下的item.
-     */
-    public static void registerConfigItems (int cid) {
-        Server server = UtgardOpcHelper.connect(cid);
-        OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
-        opcServerInfomation.setServer(server);
-        fillItemAutoGenerate(opcServerInfomation, server);
+        conInfoMap.put(c_id, serverInfomation);
     }
 
     /**
@@ -104,6 +98,29 @@ public class OpcRegisterFactory {
 
     public static ConnectionInformation fetchConnInfo (int c_id) {
         return conInfoMap.get(c_id).getConnectionInformation();
+    }
+
+    /***
+     * 注册测点，根据测点csv文件获取测点表
+     * @return 测点集合
+     */
+    public static List<MesuringPoint> registerMesuringPoint(int cid){
+        List<MesuringPoint> mesuringPointList = new LinkedList<MesuringPoint>();
+        Map<Integer, String[]> rowMpEntity = ExcelImportHandler.getDataFromCsv(new File(BaseConfiguration.MP_FILE_INPUT), 5);
+        for (Map.Entry<Integer, String[]> entry : rowMpEntity.entrySet()) {
+            MesuringPoint mesuringPoint = new MesuringPoint();
+            mesuringPoint.setIndex(entry.getValue()[0]);
+            mesuringPoint.setSourceCode(entry.getValue()[1]);
+            mesuringPoint.setTargetCode(entry.getValue()[2]);
+            mesuringPoint.setPointName(entry.getValue()[3]);
+            mesuringPoint.setDataType(OpcDataType.indexOf(Integer.parseInt(entry.getValue()[4])));
+            mesuringPoint.setSysId(Integer.parseInt(entry.getValue()[5]));
+            if (cid == Integer.parseInt(entry.getValue()[5])) {
+                mesuringPointList.add(mesuringPoint);
+            }
+            System.out.println(mesuringPoint.toString());
+        }
+        return mesuringPointList;
     }
 
     /**
