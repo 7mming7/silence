@@ -1,9 +1,9 @@
-package com.pnc.component;
+package com.pnc.opc.component;
 
-import com.pnc.domain.MesuringPoint;
-import com.pnc.domain.OpcDataType;
-import com.pnc.domain.OpcServerInfomation;
 import com.pnc.excel.handler.ExcelImportHandler;
+import com.pnc.opc.domain.MesuringPoint;
+import com.pnc.opc.domain.OpcDataType;
+import com.pnc.opc.domain.OpcServerInfomation;
 import org.jinterop.dcom.common.JIException;
 import org.openscada.opc.lib.common.ConnectionInformation;
 import org.openscada.opc.lib.da.Server;
@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.LinkedList;

@@ -270,10 +270,4 @@ public class ExcelImportHandler {
     public static boolean empty(String str) {
         return str == null || str.length() == 0;
     }
-
-    /*public static void main(String args[]){
-        ExcelImportHandler excelImportHandler = new ExcelImportHandler();
-        File file = new File("d:/test.csv");
-        ExcelImportHandler.getDataFromCsv(file, 4);
-    }*/
 }

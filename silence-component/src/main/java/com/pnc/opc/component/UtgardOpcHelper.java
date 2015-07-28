@@ -1,11 +1,9 @@
-package com.pnc.component;
+package com.pnc.opc.component;
 
 import com.pnc.excel.handler.ExcelImportHandler;
 import org.jinterop.dcom.common.JIException;
 import org.jinterop.dcom.core.JIVariant;
-import org.openscada.opc.dcom.da.OPCSERVERSTATUS;
 import org.openscada.opc.dcom.list.ClassDetails;
-import org.openscada.opc.lib.common.AlreadyConnectedException;
 import org.openscada.opc.lib.common.ConnectionInformation;
 import org.openscada.opc.lib.da.AutoReconnectController;
 import org.openscada.opc.lib.da.Item;

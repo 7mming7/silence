@@ -1,11 +1,9 @@
-package com.pnc.service;
+package com.pnc.opc.service;
 
-import com.pnc.component.BaseConfiguration;
-import com.pnc.component.OpcRegisterFactory;
-import com.pnc.domain.MesuringPoint;
-import com.pnc.domain.OpcDataType;
-import com.pnc.domain.OpcServerInfomation;
-import com.pnc.excel.handler.ExcelImportHandler;
+import com.pnc.opc.component.BaseConfiguration;
+import com.pnc.opc.component.OpcRegisterFactory;
+import com.pnc.opc.domain.MesuringPoint;
+import com.pnc.opc.domain.OpcServerInfomation;
 import org.jinterop.dcom.common.JIException;
 import org.openscada.opc.lib.common.NotConnectedException;
 import org.openscada.opc.lib.da.*;
@@ -13,10 +11,9 @@ import org.openscada.opc.lib.da.browser.Leaf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.net.UnknownHostException;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +37,8 @@ public class MesuringPointService {
      * 读取server下所有的ITEM
      * @param cid
      */
-    public void fetchReadSyncItems (final int cid) {
+    public Map<Item, ItemState> fetchReadSyncItems (final int cid) {
+        Map<Item, ItemState> itemStateMap = new HashMap<Item, ItemState>();
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
         if (opcServerInfomation.getLeafs() == null) {
             opcServerInfomation.setLeafs(null);
@@ -59,11 +57,11 @@ public class MesuringPointService {
             for(Leaf leaf:leafs){
                 Item item = group.addItem(leaf.getItemId());
                 item.setActive(true);
-                System.out.println("ItemName:[" + item.getId()
-                        + "],value:" + item.read(true).getValue());
                 itemArr[item_flag] = item;
                 item_flag++;
             }
+
+            itemStateMap = group.read(true, itemArr);
         } catch (UnknownHostException e) {
             log.error("Host unknow error.",e);
         } catch (NotConnectedException e) {
@@ -74,6 +72,16 @@ public class MesuringPointService {
             log.error("Group duplicate error.",e);
         } catch (AddFailedException e) {
             log.error("Group add error.",e);
+        }
+        return itemStateMap;
+    }
+
+    /**
+     * 各OPC系统数据同步
+     */
+    public void syncOpcItemAllSystem () {
+        for (int i=1;i < BaseConfiguration.CONFIG_CLIENT_MAX;i++) {
+            this.fetchReadSyncItems(i);
         }
     }
 }

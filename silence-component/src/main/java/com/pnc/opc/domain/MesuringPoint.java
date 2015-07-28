@@ -1,4 +1,4 @@
-package com.pnc.domain;
+package com.pnc.opc.domain;
 
 import java.io.Serializable;
 

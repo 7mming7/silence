@@ -1,6 +1,6 @@
-package com.pnc.component;
+package com.pnc.opc.component;
 
-import com.pnc.domain.OpcServerInfomation;
+import com.pnc.opc.domain.OpcServerInfomation;
 import org.openscada.opc.lib.common.ConnectionInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +56,9 @@ public class BaseConfiguration {
     public static final String connOper = "->";
 
     /**
-     * 加载配置文件
+     * 初始化，加载配置文件
      */
-    static {
+    public void init() {
         loadConfigProperties();
         fillOpcConnInformation();
     }

@@ -1,6 +1,6 @@
-package com.pnc.facade;
+package com.pnc.opc.facade;
 
-import com.pnc.component.BaseConfiguration;
+import com.pnc.opc.component.BaseConfiguration;
 
 import java.util.Scanner;
 
@@ -19,16 +19,6 @@ import java.util.Scanner;
 public class OpcProtocolFacade {
 
     private static Scanner scanner = new Scanner(System.in);
-
-    static {
-        BaseConfiguration.loadConfigProperties();
-        BaseConfiguration.fillOpcConnInformation();
-    }
-
-    public static void main (String args[]) {
-        OpcProtocolFacade opcProtocolFacade = new OpcProtocolFacade();
-        opcProtocolFacade.interactiveCmd();
-    }
 
     /**
      * 控制台交互

@@ -1,4 +1,4 @@
-package com.pnc.domain;
+package com.pnc.opc.domain;
 
 import org.openscada.opc.lib.common.ConnectionInformation;
 import org.openscada.opc.lib.da.Server;
