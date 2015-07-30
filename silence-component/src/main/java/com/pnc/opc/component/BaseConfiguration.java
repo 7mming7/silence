@@ -47,7 +47,7 @@ public class BaseConfiguration {
     private final static String CONFIG_FILE_NAME = "/conf/utgard-opc-config.properties";
 
     /** 点表文件路径 */
-    public final static String MP_FILE_INPUT = "src/main/resources/point/SyncMp.csv";
+    public final static String MP_FILE_INPUT = "\\silence-component\\src\\main\\resources\\point\\SyncMp.csv";
 
     /** 导入列的数目 */
     private final static int INPUT_COLUMN_NUM = 5;

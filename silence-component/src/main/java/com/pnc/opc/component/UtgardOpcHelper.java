@@ -129,15 +129,20 @@ public class UtgardOpcHelper {
         return codeList;
     }
 
-    public static void main (String args[]) {
-        UtgardOpcHelper ut = new UtgardOpcHelper();
+    /**
+     * 获取目标地址下所有的OPC 服务
+     * @param host       目标地址
+     * @param username   用户名
+     * @param password   密码
+     */
+    public static void findOpcServerList (String host,String username,String password) {
         Collection<ClassDetails> classDetails = null;
 
         try {
             ConnectionInformation connectionInformation = new ConnectionInformation();
-            connectionInformation.setHost("192.168.0.71");
-            connectionInformation.setUser("Administrator");
-            connectionInformation.setPassword("123456");
+            connectionInformation.setHost(host);
+            connectionInformation.setUser(username);
+            connectionInformation.setPassword(password);
             connectionInformation.setDomain("");
             ServerList serverList = new ServerList(connectionInformation.getHost(),
                     connectionInformation.getUser(), connectionInformation.getPassword(),

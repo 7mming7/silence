@@ -1,7 +1,5 @@
 package com.pnc.opc.facade;
 
-import com.pnc.opc.component.BaseConfiguration;
-
 import java.util.Scanner;
 
 /**

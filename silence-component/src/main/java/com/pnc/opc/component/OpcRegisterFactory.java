@@ -12,12 +12,9 @@ import org.openscada.opc.lib.da.browser.Leaf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.io.*;
 import java.net.UnknownHostException;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -39,6 +36,9 @@ public class OpcRegisterFactory {
     /** opc连接配置信息  K：clientID V：配置信息*/
     private static Map<Integer, OpcServerInfomation> conInfoMap = new ConcurrentHashMap<Integer, OpcServerInfomation>();
 
+    /** 点表缓存 */
+    private static Map<String,MesuringPoint> mesuringPointCacheMap = new HashMap<String, MesuringPoint>();
+
     /**
      * 注册连接信息，K 为server_id，V 为具体的连接信息
      * @param c_id server id
@@ -46,6 +46,15 @@ public class OpcRegisterFactory {
      */
     public static void registerServerInfo (int c_id, OpcServerInfomation serverInfomation) {
         conInfoMap.put(c_id, serverInfomation);
+    }
+
+    /**
+     * 根据来源编码获取点对象
+     * @param sourceCode
+     * @return
+     */
+    public static MesuringPoint fetchPointBySourceCode(String sourceCode){
+        return mesuringPointCacheMap.get(sourceCode);
     }
 
     /**
@@ -105,7 +114,8 @@ public class OpcRegisterFactory {
      */
     public static List<MesuringPoint> registerMesuringPoint(int cid){
         List<MesuringPoint> mesuringPointList = new LinkedList<MesuringPoint>();
-        Map<Integer, String[]> rowMpEntity = ExcelImportHandler.getDataFromCsv(new File(BaseConfiguration.MP_FILE_INPUT), 5);
+        File file = new File("");
+        Map<Integer, String[]> rowMpEntity = ExcelImportHandler.getDataFromCsv(new File(file.getAbsolutePath() + BaseConfiguration.MP_FILE_INPUT), -1);
         for (Map.Entry<Integer, String[]> entry : rowMpEntity.entrySet()) {
             MesuringPoint mesuringPoint = new MesuringPoint();
             mesuringPoint.setIndex(entry.getValue()[0]);
@@ -116,6 +126,7 @@ public class OpcRegisterFactory {
             mesuringPoint.setSysId(Integer.parseInt(entry.getValue()[5]));
             if (cid == Integer.parseInt(entry.getValue()[5])) {
                 mesuringPointList.add(mesuringPoint);
+                mesuringPointCacheMap.put(mesuringPoint.getSourceCode(),mesuringPoint);
             }
             System.out.println(mesuringPoint.toString());
         }
