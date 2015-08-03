@@ -49,9 +49,6 @@ public class BaseConfiguration {
     /** 点表文件路径 */
     public final static String MP_FILE_INPUT = "/point/SyncMp.csv";
 
-    /** 导入列的数目 */
-    private final static int INPUT_COLUMN_NUM = 5;
-
     /** 字符串连接符 */
     public static final String connOper = "->";
 

@@ -77,9 +77,9 @@ public class MesuringPointService {
                 }
             }
             long start1 = System.currentTimeMillis();
-            log.error("1、拼装item[]用时：" + (start1 - start) + "ms");
+            log.error("     1、拼装item[]用时：" + (start1 - start) + "ms");
             itemStateMap = group.read(true, itemArr);
-            log.error("2、group read 用时：" + (System.currentTimeMillis() - start1) + "ms");
+            log.error("     2、group read 用时：" + (System.currentTimeMillis() - start1) + "ms");
         } catch (UnknownHostException e) {
             log.error("Host unknow error.",e);
         } catch (NotConnectedException e) {
@@ -114,6 +114,9 @@ public class MesuringPointService {
         for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
             String itemCode = entry.getKey().getId();
             String itemValue = entry.getValue().getValue().toString();
+            if (itemValue.contains("org.jinterop.dcom.core.VariantBody$EMPTY")) {
+                itemValue = "[[0]]";
+            }
             MesuringPoint mesuringPoint = OpcRegisterFactory.fetchPointBySourceCode(itemCode);
             PointData pointData = new PointData();
             pointData.setIndex(mesuringPoint.getIndex());
@@ -168,19 +171,26 @@ public class MesuringPointService {
 
     public static void main(String[] args) {
         MesuringPointService mesuringPointService = new MesuringPointService();
+
         BaseConfiguration.init();
         UdpSender.init();
+
+        for (int i=1;i<=BaseConfiguration.CONFIG_CLIENT_MAX;i++) {
+            UtgardOpcHelper.fetchClassDetails(i);
+        }
         while (true) {
             try {
                 Thread.sleep(100l);//获取数据的间隔时间
+
+                log.error("数据转发时间分布：");
                 long start = System.currentTimeMillis();
 
                 Map<Item, ItemState> itemItemStateMap = mesuringPointService.syncOpcItemAllSystem();
                 long time1 = System.currentTimeMillis();
-                log.error("3、同步数据总耗时-- " + (time1 - start) + "ms");
+                log.error("     3、同步数据总耗时-- " + (time1 - start) + "ms");
                 mesuringPointService.buildDataPacket(itemItemStateMap);
                 long time2 = System.currentTimeMillis();
-                log.error("4、拼装和发送数据包总耗时-- " + (time2 - time1) + "ms");
+                log.error("     4、拼装和发送数据包总耗时-- " + (time2 - time1) + "ms");
                 log.error("-------------------------------------------------");
                 log.error("");
             } catch (InterruptedException e) {

@@ -49,6 +49,7 @@ public class UdpSender {
      */
     public static DatagramPacket assemblyDatagramPacket(String sendMsg) {
         System.out.println("sendMsg:" + sendMsg);
+        log.error("------ sendMsg:" + sendMsg);
         byte[] sendByteMsg = sendMsg.getBytes();
         DatagramPacket datagramPacket = null;
         try {
