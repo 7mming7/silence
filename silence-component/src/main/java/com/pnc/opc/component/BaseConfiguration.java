@@ -58,7 +58,7 @@ public class BaseConfiguration {
     /**
      * 初始化，加载配置文件
      */
-    public void init() {
+    public static void init() {
         loadConfigProperties();
         fillOpcConnInformation();
     }

@@ -26,7 +26,10 @@ public class UdpSender {
 
     public static DatagramSocket datagramSocket;
 
-    static {
+    /**
+     * 初始化socket
+     */
+    public static void init () {
         datagramSocket = initUdpSenderService();
     }
 

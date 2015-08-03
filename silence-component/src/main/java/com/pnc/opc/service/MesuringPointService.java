@@ -77,9 +77,9 @@ public class MesuringPointService {
                 }
             }
             long start1 = System.currentTimeMillis();
-            log.error("拼装item[]用时：" + (start1 - start) + "ms");
+            log.error("1、拼装item[]用时：" + (start1 - start) + "ms");
             itemStateMap = group.read(true, itemArr);
-            log.error("group read 用时：" + (System.currentTimeMillis() - start1) + "ms");
+            log.error("2、group read 用时：" + (System.currentTimeMillis() - start1) + "ms");
         } catch (UnknownHostException e) {
             log.error("Host unknow error.",e);
         } catch (NotConnectedException e) {
@@ -168,21 +168,23 @@ public class MesuringPointService {
 
     public static void main(String[] args) {
         MesuringPointService mesuringPointService = new MesuringPointService();
-        BaseConfiguration baseConfiguration = new BaseConfiguration();
-        baseConfiguration.init();
-        UdpSender udpSender = new UdpSender();
+        BaseConfiguration.init();
+        UdpSender.init();
         while (true) {
             try {
-                Thread.sleep(1000l);
+                Thread.sleep(100l);//获取数据的间隔时间
                 long start = System.currentTimeMillis();
 
                 Map<Item, ItemState> itemItemStateMap = mesuringPointService.syncOpcItemAllSystem();
-                long start1 = System.currentTimeMillis();
-                log.error("数据发送时长1-- " + (start1 - start) + "ms");
+                long time1 = System.currentTimeMillis();
+                log.error("3、同步数据总耗时-- " + (time1 - start) + "ms");
                 mesuringPointService.buildDataPacket(itemItemStateMap);
-                log.error("数据发送时长2-- " + (System.currentTimeMillis() - start1) + "ms");
+                long time2 = System.currentTimeMillis();
+                log.error("4、拼装和发送数据包总耗时-- " + (time2 - time1) + "ms");
+                log.error("-------------------------------------------------");
+                log.error("");
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.error("获取数据sleep出错.", e);
             }
         }
     }

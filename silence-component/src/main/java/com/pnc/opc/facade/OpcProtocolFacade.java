@@ -21,7 +21,7 @@ public class OpcProtocolFacade {
     /**
      * 控制台交互
      */
-    public void interactiveCmd () {
+    public static void interactiveCmd () {
         String line = scanner.nextLine();
         if (line.equals("help") || line.equals("h") || line.equals("?")) {
             displayCommandInfo();
