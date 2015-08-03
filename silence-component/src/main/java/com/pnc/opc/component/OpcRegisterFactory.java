@@ -114,8 +114,11 @@ public class OpcRegisterFactory {
      */
     public static List<MesuringPoint> registerMesuringPoint(int cid){
         List<MesuringPoint> mesuringPointList = new LinkedList<MesuringPoint>();
-        File file = new File("");
-        Map<Integer, String[]> rowMpEntity = ExcelImportHandler.getDataFromCsv(new File(file.getAbsolutePath() + BaseConfiguration.MP_FILE_INPUT), -1);
+        InputStream is = OpcRegisterFactory.class.getResourceAsStream(BaseConfiguration.MP_FILE_INPUT);
+        File file = new File("temp.csv");
+        inputstreamtofile(is,file);
+        Map<Integer, String[]> rowMpEntity = ExcelImportHandler.getDataFromCsv(
+                file, -1);
         for (Map.Entry<Integer, String[]> entry : rowMpEntity.entrySet()) {
             MesuringPoint mesuringPoint = new MesuringPoint();
             mesuringPoint.setIndex(entry.getValue()[0]);
@@ -128,9 +131,34 @@ public class OpcRegisterFactory {
                 mesuringPointList.add(mesuringPoint);
                 mesuringPointCacheMap.put(mesuringPoint.getSourceCode(),mesuringPoint);
             }
-            System.out.println(mesuringPoint.toString());
         }
         return mesuringPointList;
+    }
+
+    /**
+     * inputstream转化为file
+     * @param ins
+     * @param file
+     */
+    public static void inputstreamtofile(InputStream ins, File file){
+        OutputStream os = null;
+        try {
+            os = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        int bytesRead = 0;
+        byte[] buffer = new byte[8192];
+
+        try {
+            while ((bytesRead = ins.read(buffer, 0, 8192)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+            os.close();
+            ins.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

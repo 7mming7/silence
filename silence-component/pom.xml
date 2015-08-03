@@ -10,10 +10,10 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>silence-core</artifactId>
+    <artifactId>silence-component</artifactId>
     <packaging>jar</packaging>
 
-    <name>silence-core</name>
+    <name>silence-component</name>
     <url>http://maven.apache.org</url>
 
     <!-- 第三方jar的版本号参数变量 -->

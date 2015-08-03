@@ -45,13 +45,20 @@ public class UdpSender {
      * @return
      */
     public static DatagramPacket assemblyDatagramPacket(String sendMsg) {
+        System.out.println("sendMsg:" + sendMsg);
         byte[] sendByteMsg = sendMsg.getBytes();
         DatagramPacket datagramPacket = null;
         try {
+            String ipConfigStr = UdpSocketCfg.RECEIVE_IP;
+            String[] ipStr = ipConfigStr.split("\\.");
+            byte[] ipBuf = new byte[4];
+            for(int i = 0; i < 4; i++){
+                ipBuf[i] = (byte)(Integer.parseInt(ipStr[i])&0xff);
+            }
             datagramPacket = new DatagramPacket(
                     sendByteMsg,
                     sendByteMsg.length,
-                    InetAddress.getByAddress(UdpSocketCfg.RECEIVE_IP.getBytes()),
+                    InetAddress.getByAddress(ipBuf),
                     UdpSocketCfg.RECEIVE_PORT);
         } catch (UnknownHostException e) {
             log.error("发送的目标地址错误.",e);

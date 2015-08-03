@@ -20,7 +20,7 @@ import java.net.InetAddress;
  */
 public class UdpClientTemp {
     private static final int TIMEOUT = 5000;  //设置接收数据的超时时间
-    private static final int MAXNUM = 5;      //设置重发数据的最多次数
+    private static final int MAXNUM = 50;      //设置重发数据的最多次数
     public static void main(String args[])throws IOException {
         String str_send = "Hello UDPserver";
         byte[] buf = new byte[1024];
@@ -43,9 +43,6 @@ public class UdpClientTemp {
                 //接收从服务端发送回来的数据
                 ds.receive(dp_receive);
                 //如果接收到的数据不是来自目标地址，则抛出异常
-                if(!dp_receive.getAddress().equals(loc)){
-                    throw new IOException("Received packet from an umknown source");
-                }
                 //如果接收到数据。则将receivedResponse标志位改为true，从而退出循环
                 receivedResponse = true;
             }catch(InterruptedIOException e){

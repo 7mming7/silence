@@ -41,35 +41,45 @@ public class MesuringPointService {
 
     private static final Logger log = LoggerFactory.getLogger(MesuringPointService.class);
 
+    public static Group group;
+
+    public static Item[] itemArr = null;
+
     /**
      * 读取server下所有的ITEM
      * @param cid
      */
     public Map<Item, ItemState> fetchReadSyncItems (final int cid) {
+        long start = System.currentTimeMillis();
         Map<Item, ItemState> itemStateMap = new HashMap<Item, ItemState>();
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
+
+        boolean flag = true;
         if (opcServerInfomation.getLeafs() == null) {
+            flag = false;
             opcServerInfomation.setLeafs(null);
             List<MesuringPoint> mesuringPointList = OpcRegisterFactory.registerMesuringPoint(cid);
             OpcRegisterFactory.registerConfigItems(cid, mesuringPointList);
         }
         Collection<Leaf> leafs = opcServerInfomation.getLeafs();
         Server server = opcServerInfomation.getServer();
-        server.setDefaultUpdateRate(6000);
-        Group group = null;
-        final Item[] itemArr = new Item[leafs.size()];
         try {
-            int item_flag = 0;
-            group = server.addGroup();
-            group.setActive(true);
-            for(Leaf leaf:leafs){
-                Item item = group.addItem(leaf.getItemId());
-                item.setActive(true);
-                itemArr[item_flag] = item;
-                item_flag++;
+            if (!flag) {
+                itemArr = new Item[leafs.size()];
+                int item_flag = 0;
+                group = server.addGroup();
+                group.setActive(true);
+                for(Leaf leaf:leafs){
+                    Item item = group.addItem(leaf.getItemId());
+                    item.setActive(true);
+                    itemArr[item_flag] = item;
+                    item_flag++;
+                }
             }
-
+            long start1 = System.currentTimeMillis();
+            log.error("拼装item[]用时：" + (start1 - start) + "ms");
             itemStateMap = group.read(true, itemArr);
+            log.error("group read 用时：" + (System.currentTimeMillis() - start1) + "ms");
         } catch (UnknownHostException e) {
             log.error("Host unknow error.",e);
         } catch (NotConnectedException e) {
@@ -102,15 +112,13 @@ public class MesuringPointService {
     public void buildDataPacket (Map<Item, ItemState> syncItems) {
         List<PointData> msgDataList = new LinkedList<PointData>();
         for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
-            log.error("key= " + entry.getKey().getId()
-                    + " and value= " + entry.getValue().getValue().toString());
             String itemCode = entry.getKey().getId();
             String itemValue = entry.getValue().getValue().toString();
             MesuringPoint mesuringPoint = OpcRegisterFactory.fetchPointBySourceCode(itemCode);
             PointData pointData = new PointData();
             pointData.setIndex(mesuringPoint.getIndex());
             pointData.setItemCode(itemCode);
-            pointData.setItemValue(itemValue);
+            pointData.setItemValue(itemValue.substring(2, itemValue.length() - 2));
             msgDataList.add(pointData);
         }
         Collections.sort(msgDataList,new PointDataComparator());
@@ -127,18 +135,23 @@ public class MesuringPointService {
         if (msgDataList.isEmpty() || msgDataList.size() == 0) {
             return null;
         }
-        for(int i = Integer.parseInt(msgDataList.get(0).getIndex());
-            i<= Integer.parseInt(msgDataList.get(msgDataList.size() - 1).getIndex());
+        for(int i = 0;
+            i< msgDataList.size();
             i = i + UdpSocketCfg.DATAPACKET_SIZE) {
 
-            List<PointData> subPointDataList = msgDataList.subList(i,i+UdpSocketCfg.DATAPACKET_SIZE);
+            List<PointData> subPointDataList = new LinkedList<PointData>();
+            if (msgDataList.size() <= i+UdpSocketCfg.DATAPACKET_SIZE) {
+                subPointDataList = msgDataList.subList(i,msgDataList.size());
+            } else {
+                subPointDataList = msgDataList.subList(i,i+UdpSocketCfg.DATAPACKET_SIZE);
+            }
             List<String> packetDataList = new LinkedList<String>();
             for (PointData pointData:subPointDataList) {
                 packetDataList.add(pointData.getItemValue());
             }
 
             SendMessage sendMessage = new SendMessage();
-            sendMessage.setStartPos(i);
+            sendMessage.setStartPos(Integer.parseInt(msgDataList.get(0).getIndex()));
             sendMessage.setPointAmount(packetDataList.size());
             sendMessage.setData(packetDataList);
 
@@ -157,13 +170,20 @@ public class MesuringPointService {
         MesuringPointService mesuringPointService = new MesuringPointService();
         BaseConfiguration baseConfiguration = new BaseConfiguration();
         baseConfiguration.init();
-        ConnectionInformation connectionInformation = OpcRegisterFactory.fetchConnInfo(1);
-        UtgardOpcHelper.findOpcServerList(
-                connectionInformation.getHost(),
-                connectionInformation.getUser(),
-                connectionInformation.getPassword());
-        Map<Item, ItemState> itemItemStateMap = mesuringPointService.syncOpcItemAllSystem();
-        mesuringPointService.buildDataPacket(itemItemStateMap);
-    }
+        UdpSender udpSender = new UdpSender();
+        while (true) {
+            try {
+                Thread.sleep(1000l);
+                long start = System.currentTimeMillis();
 
+                Map<Item, ItemState> itemItemStateMap = mesuringPointService.syncOpcItemAllSystem();
+                long start1 = System.currentTimeMillis();
+                log.error("数据发送时长1-- " + (start1 - start) + "ms");
+                mesuringPointService.buildDataPacket(itemItemStateMap);
+                log.error("数据发送时长2-- " + (System.currentTimeMillis() - start1) + "ms");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
