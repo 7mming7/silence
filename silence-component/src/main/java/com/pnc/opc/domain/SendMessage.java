@@ -1,5 +1,6 @@
 package com.pnc.opc.domain;
 
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public class SendMessage {
 
     public long pointAmount;
 
-    public List<String> data;
+    public List<PointData> pointDatas;
 
     public String getHead() {
         return head;
@@ -48,15 +49,15 @@ public class SendMessage {
         this.pointAmount = pointAmount;
     }
 
-    public List<String> getData() {
-        return data;
+    public List<PointData> getData() {
+        return pointDatas;
     }
 
-    public void setData(List<String> data) {
-        this.data = data;
+    public void setData(List<PointData> pointDatas) {
+        this.pointDatas = pointDatas;
     }
 
-    public String genSendMessage () {
+    public String genSendMessageForLucent () {
         StringBuilder sb = new StringBuilder();
         sb.append(this.head)
                 .append(";")
@@ -64,8 +65,17 @@ public class SendMessage {
                 .append(";")
                 .append(this.pointAmount)
                 .append(";");
-        for (String str:data) {
-            sb.append(str).append(";");
+        for (PointData pointData:pointDatas) {
+            sb.append(pointData.getItemValue()).append(";");
+        }
+        return sb.toString();
+    }
+
+    public String genSendMessageForInside () {
+        StringBuilder sb = new StringBuilder();
+        for (PointData pointData:pointDatas) {
+            sb.append(pointData.getItemCode()).append(",");
+            sb.append(pointData.getItemValue()).append(";");
         }
         return sb.toString();
     }

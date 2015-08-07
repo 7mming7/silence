@@ -8,6 +8,7 @@ import com.pnc.opc.domain.MesuringPoint;
 import com.pnc.opc.domain.OpcServerInfomation;
 import com.pnc.opc.domain.PointData;
 import com.pnc.opc.domain.SendMessage;
+import com.pnc.socket.SocketConsts;
 import com.pnc.socket.UdpSender;
 import com.pnc.socket.UdpSocketCfg;
 import org.jinterop.dcom.common.JIException;
@@ -148,9 +149,9 @@ public class MesuringPointService {
             } else {
                 subPointDataList = msgDataList.subList(i,i+UdpSocketCfg.DATAPACKET_SIZE);
             }
-            List<String> packetDataList = new LinkedList<String>();
+            List<PointData> packetDataList = new LinkedList<PointData>();
             for (PointData pointData:subPointDataList) {
-                packetDataList.add(pointData.getItemValue());
+                packetDataList.add(pointData);
             }
 
             SendMessage sendMessage = new SendMessage();
@@ -158,7 +159,14 @@ public class MesuringPointService {
             sendMessage.setPointAmount(packetDataList.size());
             sendMessage.setData(packetDataList);
 
-            DatagramPacket datagramPacket = UdpSender.assemblyDatagramPacket(sendMessage.genSendMessage());
+            String sendMsg = "";
+            if (UdpSocketCfg.SENDER_FOR_SYSTEM == SocketConsts.SENDER_FOR_SYSTEM_INSIDE) {
+                sendMsg = sendMessage.genSendMessageForInside();
+            } else if (UdpSocketCfg.SENDER_FOR_SYSTEM == SocketConsts.SENDER_FOR_SYSTEM_LUCENT) {
+                sendMsg = sendMessage.genSendMessageForLucent();
+            }
+
+            DatagramPacket datagramPacket = UdpSender.assemblyDatagramPacket(sendMsg);
             try {
                 UdpSender.datagramSocket.send(datagramPacket);
             } catch (IOException e) {

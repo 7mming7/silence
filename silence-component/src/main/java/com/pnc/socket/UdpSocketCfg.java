@@ -34,6 +34,8 @@ public class UdpSocketCfg {
 
     public static String CONFIG_DATAPACKET_SIZE = "DATAPACKET_SIZE";
 
+    public static String CONFIG_SENDER_FOR_SYSTEM = "SENDER_FOR_SYSTEM";
+
     public static int SEND_PORT;
 
     public static String RECEIVE_IP;
@@ -41,6 +43,8 @@ public class UdpSocketCfg {
     public static int RECEIVE_PORT;
 
     public static int DATAPACKET_SIZE;
+
+    public static int SENDER_FOR_SYSTEM;
 
     /** 配置文件路径 */
     private final static String CONFIG_FILE_NAME = "/conf/udp-socket-config.properties";
@@ -61,6 +65,7 @@ public class UdpSocketCfg {
             RECEIVE_IP = prop.getProperty(CONFIG_RECEIVE_IP);
             RECEIVE_PORT = Integer.parseInt(prop.getProperty(CONFIG_RECEIVE_PORT));
             DATAPACKET_SIZE = Integer.parseInt(prop.getProperty(CONFIG_DATAPACKET_SIZE));
+            SENDER_FOR_SYSTEM = Integer.parseInt(prop.getProperty(CONFIG_SENDER_FOR_SYSTEM));
         } catch (IOException e) {
             log.error("Utgard opc 加载" + CONFIG_FILE_NAME + "配置文件出错.", e);
         }
