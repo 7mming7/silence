@@ -102,6 +102,10 @@ public class ExcelImportHandler {
     public static Map<Integer, String[]> getDataFromCsv(File file, int rowIndex) {
         try {
             List<String> lines = FileUtils.readLines(file, "GBK");
+            for(String str:lines) {
+                System.out.println(str);
+            }
+
             Map<Integer, String[]> results = new HashMap<Integer, String[]>();
             int rowNum = rowIndex;
             if (lines != null) {
