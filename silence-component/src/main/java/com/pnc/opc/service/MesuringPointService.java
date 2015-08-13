@@ -71,7 +71,12 @@ public class MesuringPointService {
                 group = server.addGroup();
                 group.setActive(true);
                 for(Leaf leaf:leafs){
-                    Item item = group.addItem(leaf.getItemId());
+                    Item item = null;
+                    try {
+                        item = group.addItem(leaf.getItemId());
+                    } catch (AddFailedException e) {
+                        log.error("Group add error.Error item is ：" + leaf.getItemId(),e);
+                    }
                     item.setActive(true);
                     itemArr[item_flag] = item;
                     item_flag++;
@@ -89,8 +94,6 @@ public class MesuringPointService {
             log.error("Opc server connect error.",e);
         } catch (DuplicateGroupException e) {
             log.error("Group duplicate error.",e);
-        } catch (AddFailedException e) {
-            log.error("Group add error.",e);
         }
         return itemStateMap;
     }
