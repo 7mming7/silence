@@ -60,9 +60,11 @@ public class MesuringPointService {
             flag = false;
             opcServerInfomation.setLeafs(null);
             List<MesuringPoint> mesuringPointList = OpcRegisterFactory.registerMesuringPoint(cid);
+            System.out.println("mesuringPointList:----" + mesuringPointList.size());
             OpcRegisterFactory.registerConfigItems(cid, mesuringPointList);
         }
         Collection<Leaf> leafs = opcServerInfomation.getLeafs();
+        System.out.println("leafs:----" + leafs.size());
         Server server = opcServerInfomation.getServer();
         try {
             if (!flag) {
@@ -80,6 +82,12 @@ public class MesuringPointService {
                     item.setActive(true);
                     itemArr[item_flag] = item;
                     item_flag++;
+                }
+                System.out.println("itemArr:---" + itemArr.length);
+                int i = 1;
+                for (Item item:itemArr) {
+                    System.out.println(item.getId());
+                    System.out.println(i++);
                 }
             }
             long start1 = System.currentTimeMillis();
@@ -114,6 +122,7 @@ public class MesuringPointService {
      * @param syncItems
      */
     public void buildDataPacket (Map<Item, ItemState> syncItems) {
+        System.out.println("syncItems:----" + syncItems.size());
         List<PointData> msgDataList = new LinkedList<PointData>();
         for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
             String itemCode = entry.getKey().getId();
@@ -128,7 +137,16 @@ public class MesuringPointService {
             pointData.setItemValue(itemValue.substring(2, itemValue.length() - 2));
             msgDataList.add(pointData);
         }
-        Collections.sort(msgDataList,new PointDataComparator());
+        Collections.sort(msgDataList, new PointDataComparator());
+        int i = 1;
+        for (PointData pointData:msgDataList) {
+            if (i != Integer.parseInt(pointData.getIndex())) {
+                System.out.println("missing index : " + i);
+                i = Integer.parseInt(pointData.getIndex()) + 1;
+            } else {
+                i = i + 1;
+            }
+        }
         pointDataUnpackSend(msgDataList);
     }
 
@@ -138,6 +156,7 @@ public class MesuringPointService {
      * @return
      */
     public List<DatagramPacket> pointDataUnpackSend (List<PointData> msgDataList) {
+        System.out.println("msgDataList:---" + msgDataList.size());
         List<DatagramPacket> datagramPacketList = new ArrayList<DatagramPacket>();
         if (msgDataList.isEmpty() || msgDataList.size() == 0) {
             return null;

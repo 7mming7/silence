@@ -43,4 +43,9 @@ public class PointData {
     public void setItemValue(String itemValue) {
         this.itemValue = itemValue;
     }
+
+    @Override
+    public String toString() {
+        return "index:" + this.index + ";itemCode:" + this.itemCode;
+    }
 }

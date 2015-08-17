@@ -66,7 +66,15 @@ public class SendMessage {
                 .append(this.pointAmount)
                 .append(";");
         for (PointData pointData:pointDatas) {
-            sb.append(pointData.getItemValue()).append(";");
+            String appendStr = "";
+            if (pointData.getItemValue().equals("true")) {
+                appendStr = "1";
+            } else if (pointData.getItemValue().equals("false")){
+                appendStr = "0";
+            } else {
+                appendStr = pointData.getItemValue();
+            }
+            sb.append(appendStr).append(";");
         }
         return sb.toString();
     }

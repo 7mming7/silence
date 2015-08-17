@@ -20,6 +20,6 @@ public class PointDataComparator implements Comparator<PointData> {
 
     @Override
     public int compare(PointData o1, PointData o2) {
-        return o1.getIndex().compareTo(o2.getIndex());
+        return Integer.parseInt(o1.getIndex()) - Integer.parseInt(o2.getIndex());
     }
 }

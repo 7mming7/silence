@@ -54,7 +54,7 @@ public class UdpSocketCfg {
     private static DatagramSocket ds;
 
     /**
-     * 加载opc服务的配置文件
+     * 加载socket服务的配置文件
      * @return
      */
     public static Properties loadConfigProperties () {
