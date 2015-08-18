@@ -60,11 +60,11 @@ public class MesuringPointService {
             flag = false;
             opcServerInfomation.setLeafs(null);
             List<MesuringPoint> mesuringPointList = OpcRegisterFactory.registerMesuringPoint(cid);
-            System.out.println("mesuringPointList:----" + mesuringPointList.size());
+            log.error("mesuringPointList:----" + mesuringPointList.size());
             OpcRegisterFactory.registerConfigItems(cid, mesuringPointList);
         }
         Collection<Leaf> leafs = opcServerInfomation.getLeafs();
-        System.out.println("leafs:----" + leafs.size());
+        log.error("leafs:----" + leafs.size());
         Server server = opcServerInfomation.getServer();
         try {
             if (!flag) {
@@ -141,7 +141,7 @@ public class MesuringPointService {
         int i = 1;
         for (PointData pointData:msgDataList) {
             if (i != Integer.parseInt(pointData.getIndex())) {
-                System.out.println("missing index : " + i);
+                log.error("missing index : " + i);
                 i = Integer.parseInt(pointData.getIndex()) + 1;
             } else {
                 i = i + 1;
