@@ -12,6 +12,9 @@ import com.pnc.socket.SocketConsts;
 import com.pnc.socket.UdpSender;
 import com.pnc.socket.UdpSocketCfg;
 import org.jinterop.dcom.common.JIException;
+import org.jinterop.dcom.core.JIUnsignedInteger;
+import org.jinterop.dcom.core.JIUnsignedShort;
+import org.jinterop.dcom.core.JIVariant;
 import org.jsoup.Connection;
 import org.openscada.opc.lib.common.ConnectionInformation;
 import org.openscada.opc.lib.common.NotConnectedException;
@@ -83,11 +86,11 @@ public class MesuringPointService {
                     itemArr[item_flag] = item;
                     item_flag++;
                 }
-                System.out.println("itemArr:---" + itemArr.length);
+                log.error("itemArr:---" + itemArr.length);
                 int i = 1;
                 for (Item item:itemArr) {
-                    System.out.println(item.getId());
-                    System.out.println(i++);
+                    log.error(item.getId());
+                    i++;
                 }
             }
             long start1 = System.currentTimeMillis();
@@ -122,19 +125,36 @@ public class MesuringPointService {
      * @param syncItems
      */
     public void buildDataPacket (Map<Item, ItemState> syncItems) {
-        System.out.println("syncItems:----" + syncItems.size());
+        log.error("syncItems:----" + syncItems.size());
         List<PointData> msgDataList = new LinkedList<PointData>();
         for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
             String itemCode = entry.getKey().getId();
             String itemValue = entry.getValue().getValue().toString();
+            try {
+                JIVariant jiVariant = entry.getValue().getValue();
+                if (jiVariant.getType() == 18) {
+                    JIUnsignedShort jiUnsignedShort = (JIUnsignedShort)jiVariant.getObject();
+                    log.error("&&&&&type-18  -->  " + jiUnsignedShort.getValue().toString());
+                    itemValue = jiUnsignedShort.getValue().toString();
+                } else if (jiVariant.getType() == 19) {
+                    JIUnsignedInteger jiUnsignedInteger = (JIUnsignedInteger)jiVariant.getObject();
+                    log.error("&&&&&type-19  -->  " + jiUnsignedInteger.getValue().toString());
+                    itemValue = jiUnsignedInteger.getValue().toString();
+                } else {
+                    itemValue = jiVariant.getObject().toString();
+                }
+            } catch (JIException e) {
+                e.printStackTrace();
+            }
+
             if (itemValue.contains("org.jinterop.dcom.core.VariantBody$EMPTY")) {
-                itemValue = "[[0]]";
+                itemValue = "0";
             }
             MesuringPoint mesuringPoint = OpcRegisterFactory.fetchPointBySourceCode(itemCode);
             PointData pointData = new PointData();
             pointData.setIndex(mesuringPoint.getIndex());
             pointData.setItemCode(itemCode);
-            pointData.setItemValue(itemValue.substring(2, itemValue.length() - 2));
+            pointData.setItemValue(itemValue);
             msgDataList.add(pointData);
         }
         Collections.sort(msgDataList, new PointDataComparator());
@@ -156,7 +176,6 @@ public class MesuringPointService {
      * @return
      */
     public List<DatagramPacket> pointDataUnpackSend (List<PointData> msgDataList) {
-        System.out.println("msgDataList:---" + msgDataList.size());
         List<DatagramPacket> datagramPacketList = new ArrayList<DatagramPacket>();
         if (msgDataList.isEmpty() || msgDataList.size() == 0) {
             return null;
