@@ -122,9 +122,9 @@ public class OpcRegisterFactory {
         for (Map.Entry<Integer, String[]> entry : rowMpEntity.entrySet()) {
             MesuringPoint mesuringPoint = new MesuringPoint();
             mesuringPoint.setIndex(entry.getValue()[0]);
-            mesuringPoint.setSourceCode(entry.getValue()[1].replaceAll("-",","));
-            mesuringPoint.setTargetCode(entry.getValue()[2].replaceAll("-",","));
-            mesuringPoint.setPointName(entry.getValue()[3].replaceAll("-",","));
+            mesuringPoint.setSourceCode(entry.getValue()[1].replaceAll("~",","));
+            mesuringPoint.setTargetCode(entry.getValue()[2].replaceAll("~",","));
+            mesuringPoint.setPointName(entry.getValue()[3].replaceAll("~",","));
             mesuringPoint.setDataType(OpcDataType.indexOf(Integer.parseInt(entry.getValue()[4])));
             mesuringPoint.setSysId(Integer.parseInt(entry.getValue()[5]));
             if (cid == Integer.parseInt(entry.getValue()[5])) {

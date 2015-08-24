@@ -82,8 +82,15 @@ public class SendMessage {
     public String genSendMessageForInside () {
         StringBuilder sb = new StringBuilder();
         for (PointData pointData:pointDatas) {
-            sb.append(pointData.getItemCode()).append(",");
-            sb.append(pointData.getItemValue()).append(";");
+            sb.append(pointData.getItemCode()).append("%%");
+            if (pointData.getItemValue().equals("true")) {
+                sb.append("1");
+            } else if (pointData.getItemValue().equals("false")){
+                sb.append("0");
+            } else {
+                sb.append(pointData.getItemValue());
+            }
+            sb.append(";");
         }
         return sb.toString();
     }
