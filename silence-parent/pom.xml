@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>silence</artifactId>
-        <groupId>com.pnc</groupId>
+        <groupId>com.sq</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
@@ -34,7 +34,20 @@
 
         <commons-lang3.version>3.1</commons-lang3.version>
         <commons-io.version>2.4</commons-io.version>
+        <common-collections4.version>4.0</common-collections4.version>
+        <guava.version>15.0</guava.version>
+        <common.fileupload.version>1.3</common.fileupload.version>
+        <common.compress.version>1.6</common.compress.version>
 
+        <servlet.version>3.0.1</servlet.version>
+        <jsp.version>2.2</jsp.version>
+        <jstl.version>1.2</jstl.version>
+        <standard.version>1.1.2</standard.version>
+
+        <aspectj.version>1.7.4</aspectj.version>
+        <spring.version>4.0.0.RELEASE</spring.version>
+
+        <quartz.version>2.2.1</quartz.version>
         <poi.version>3.10.1</poi.version>
     </properties>
 
@@ -53,6 +66,12 @@
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
         </dependency>
 
         <!-- 日志相关jar包 -->
@@ -80,9 +99,132 @@
             <version>${commons-lang3.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${common-collections4.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.8.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>${common.fileupload.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${common.compress.version}</version>
+        </dependency>
+
+        <!-- web相关jar包 -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>${jsp.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>${standard.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>${jstl.version}</version>
+        </dependency>
+
+        <!-- aspectj相关jar包-->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
+
+
+        <!-- spring相关jar包 -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <!-- spring webmvc相关jar包 -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- quartz依赖 -->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz-jobs</artifactId>
+            <version>${quartz.version}</version>
         </dependency>
 
         <!-- 操作office组件 -->
@@ -124,40 +266,19 @@
             <!-- The configuration of maven-jar-plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
-                <!-- The configuration of the plugin -->
                 <configuration>
-                    <!-- Configuration of the archiver -->
                     <archive>
-
-                        <!--
-                            生成的jar中，不要包含pom.xml和pom.properties这两个文件
-                        -->
-                        <addMavenDescriptor>false</addMavenDescriptor>
-
-                        <!-- Manifest specific configuration -->
                         <manifest>
-                            <!--
-                                是否要把第三方jar放到manifest的classpath中
-                            -->
-                            <addClasspath>true</addClasspath>
-                            <!--
-                               生成的manifest中classpath的前缀，因为要把第三方jar放到lib目录下，所以classpath的前缀是lib/
-                           -->
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <!--
-                                应用的main class
-                            -->
-                            <mainClass>com.pnc.opc.service.MesuringPointService</mainClass>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                     </archive>
-                    <!--
-                        过滤掉不希望包含在jar中的文件
-                    -->
-                    <excludes>
-                        <exclude>${project.basedir}/xml/*</exclude>
-                    </excludes>
                 </configuration>
             </plugin>
 
@@ -171,8 +292,8 @@
             </plugin>
 
             <!-- The configuration of maven-assembly-plugin -->
-            <plugin>
-                <!-- mvn assembly:single -->
+            <!--<plugin>
+                &lt;!&ndash; mvn assembly:single &ndash;&gt;
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
@@ -185,7 +306,7 @@
                         </manifest>
                     </archive>
                 </configuration>
-                <executions>  <!-- 这部分配置只是为了把任务绑定到 package -->
+                <executions>  &lt;!&ndash; 这部分配置只是为了把任务绑定到 package &ndash;&gt;
                     <execution>
                         <id>make-assembly</id>
                         <phase>package</phase>
@@ -194,7 +315,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
 
             <plugin>
                 <artifactId>maven-site-plugin</artifactId>
