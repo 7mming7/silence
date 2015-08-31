@@ -67,7 +67,9 @@ public class OpcRegisterFactory {
     public static void registerConfigItems (int cid, List<MesuringPoint> mesuringPointList) {
         Server server = UtgardOpcHelper.connect(cid);
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
+
         opcServerInfomation.setServer(server);
+        opcServerInfomation.setIsConnect(true);
         fillItemDbRecord(opcServerInfomation, mesuringPointList);
     }
 

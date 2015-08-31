@@ -58,7 +58,7 @@ public class MesuringPointService {
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
 
         boolean flag = true;
-        if (opcServerInfomation.getLeafs() == null) {
+        if ( !opcServerInfomation.isConnect() ||opcServerInfomation.getLeafs() == null) {
             flag = false;
             opcServerInfomation.setLeafs(null);
             List<MesuringPoint> mesuringPointList = OpcRegisterFactory.registerMesuringPoint(cid);
@@ -100,8 +100,12 @@ public class MesuringPointService {
             log.error("Host unknow error.",e);
         } catch (NotConnectedException e) {
             log.error("Connnect to opc error.",e);
+            opcServerInfomation.setIsConnect(false);
+            log.error(opcServerInfomation.getConnectionInformation().getHost() +opcServerInfomation.getConnectionInformation().getClsid()+ "  连接异常尝试重新连接 ");
         } catch (JIException e) {
             log.error("Opc server connect error.",e);
+            opcServerInfomation.setIsConnect(false);
+            log.error(opcServerInfomation.getConnectionInformation().getHost() + "  连接异常尝试重新连接 ");
         } catch (DuplicateGroupException e) {
             log.error("Group duplicate error.",e);
         }
@@ -193,7 +197,6 @@ public class MesuringPointService {
             counter++;
             List<PointData> packetDataList = new LinkedList<PointData>();
             for (PointData pointData:subPointDataList) {
-                log.error("add point index:" + pointData.getIndex());
                 packetDataList.add(pointData);
             }
 
@@ -256,7 +259,8 @@ public class MesuringPointService {
         UdpSender.init();
 
         for (int i=1;i<=BaseConfiguration.CONFIG_CLIENT_MAX;i++) {
-            UtgardOpcHelper.fetchClassDetails(i);
+            int sysId = Integer.parseInt(OpcRegisterFactory.fetchOpcInfo(i).getSysId());
+            UtgardOpcHelper.fetchClassDetails(sysId);
         }
         while (true) {
             try {

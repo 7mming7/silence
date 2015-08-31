@@ -20,7 +20,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.7</java.version>
 
-        <silence.core.version>1.0-SNAPSHOT</silence.core.version>
         <fastjson.version>1.1.34</fastjson.version>
         <jsoup.version>1.7.3</jsoup.version>
         <jinterop.version>2.0.5</jinterop.version>
@@ -30,12 +29,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.pnc</groupId>
-            <artifactId>silence-core</artifactId>
-            <version>${silence.core.version}</version>
-        </dependency>
-
         <!-- json 相关jar包 -->
         <dependency>
             <groupId>com.alibaba</groupId>

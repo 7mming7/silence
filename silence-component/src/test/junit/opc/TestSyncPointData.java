@@ -1,3 +1,7 @@
+import com.sq.opc.service.MesuringPointService;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * Created with IntelliJ IDEA.
  * User: shuiqing
@@ -11,4 +15,12 @@
  * | o| (_
  */
 public class TestSyncPointData extends TestCase {
+
+    @Autowired
+    public MesuringPointService mesuringPointService;
+
+    @Test
+    public void testSyncData() {
+        mesuringPointService.startReceiveSenderService();
+    }
 }
