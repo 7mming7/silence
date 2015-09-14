@@ -26,6 +26,8 @@ public class OpcServerInfomation {
 
     private Server server;
 
+    private boolean isConnect;
+
     /** 连接信息 */
     private ConnectionInformation connectionInformation;
 
@@ -70,5 +72,13 @@ public class OpcServerInfomation {
 
     public void setSysId(String sysId) {
         this.sysId = sysId;
+    }
+
+    public boolean isConnect() {
+        return isConnect;
+    }
+
+    public void setIsConnect(boolean isConnect) {
+        this.isConnect = isConnect;
     }
 }

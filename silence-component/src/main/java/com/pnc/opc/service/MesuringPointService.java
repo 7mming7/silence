@@ -59,7 +59,7 @@ public class MesuringPointService {
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
 
         boolean flag = true;
-        if (opcServerInfomation.getLeafs() == null) {
+        if (!opcServerInfomation.isConnect() || opcServerInfomation.getLeafs() == null) {
             flag = false;
             opcServerInfomation.setLeafs(null);
             List<MesuringPoint> mesuringPointList = OpcRegisterFactory.registerMesuringPoint(cid);
@@ -100,8 +100,10 @@ public class MesuringPointService {
         } catch (UnknownHostException e) {
             log.error("Host unknow error.",e);
         } catch (NotConnectedException e) {
+            opcServerInfomation.setIsConnect(false);
             log.error("Connnect to opc error.",e);
         } catch (JIException e) {
+            opcServerInfomation.setIsConnect(false);
             log.error("Opc server connect error.",e);
         } catch (DuplicateGroupException e) {
             log.error("Group duplicate error.",e);
@@ -194,7 +196,6 @@ public class MesuringPointService {
             counter++;
             List<PointData> packetDataList = new LinkedList<PointData>();
             for (PointData pointData:subPointDataList) {
-                log.error("add point index:" + pointData.getIndex());
                 packetDataList.add(pointData);
             }
 
