@@ -28,15 +28,7 @@
         </encoder>
     </appender>
 
-    <logger name="org" level="ERROR"/>
-    <logger name="ndr" level="ERROR"/>
-    <logger name="jcifs" level="ERROR"/>
-    <logger name="rpc" level="ERROR"/>
-    <logger name="gnu" level="ERROR"/>
-    <logger name="ch" level="ERROR"/>
-    <logger name="com" level="ERROR"/>
-
-    <root level="ERROR">
+    <root level="info">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="RollingFile"/>
     </root>
